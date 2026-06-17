@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西方政治思想史 · 选择题刷题</title>
+<style>
+:root{
+  --bg:#f6f5f1; --card:#fff; --ink:#23211c; --ink2:#5c574d; --ink3:#8a8478;
+  --line:#e3e0d8; --accent:#7a5cff; --accent-soft:#efeaff;
+  --ok:#1a7d57; --ok-bg:#e6f4ec; --bad:#b23b2e; --bad-bg:#fbeae7;
+  --amber:#a86413;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:21px;font-weight:700;letter-spacing:.5px}
+.sub{color:var(--ink3);font-size:13px;margin-top:4px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.label{font-size:12px;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:#fafaf8;cursor:pointer;user-select:none;transition:.12s;color:var(--ink2)}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.btn{font-size:15px;font-weight:600;padding:11px 20px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer;transition:.12s}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--ink2);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink2);margin-bottom:6px}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog>i{display:block;height:100%;background:var(--accent);transition:.3s;width:0}
+.qtype{display:inline-block;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:6px;margin-bottom:12px}
+.qtext{font-size:17px;font-weight:600;line-height:1.55;margin-bottom:16px}
+.qtext .hl{color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fafaf8;cursor:pointer;transition:.12s;font-size:15px}
+.opt:hover{border-color:var(--accent)}
+.opt .k{font-weight:700;color:var(--ink3);flex-shrink:0}
+.opt.correct{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.opt.correct .k{color:var(--ok)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt.wrong .k{color:var(--bad)}
+.opt.locked{cursor:default}
+.opt.dim{opacity:.55}
+.explain{margin-top:16px;padding:14px;border-radius:10px;background:#f3f1ea;border:1px dashed var(--line);font-size:14px;color:var(--ink2);display:none}
+.explain.show{display:block}
+.explain b{color:var(--ink)}
+.explain .tag{display:inline-block;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:5px;padding:1px 7px;margin:2px 4px 2px 0;color:var(--ink2)}
+.foot{display:flex;justify-content:space-between;margin-top:18px;gap:8px}
+.result{text-align:center;padding:10px 0}
+.score{font-size:46px;font-weight:800;color:var(--accent);line-height:1.1}
+.score small{font-size:18px;color:var(--ink3);font-weight:600}
+.muted{color:var(--ink3);font-size:13px}
+.tip{font-size:12px;color:var(--ink3);margin-top:10px;line-height:1.6}
+.wrongnum{color:var(--bad);font-weight:700}
+.hidden{display:none}
+kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 7px;font-size:12px;color:var(--ink2)}
+.btn.amber{background:#a86413;color:#fff;border:none}
+.btn.amber:hover{filter:brightness(1.08)}
+.btn.added{background:#e6f4ec;color:var(--ok);border:1px solid var(--ok);cursor:default}
+.io-box{width:100%;margin-top:10px;font-size:13px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fafaf8;resize:vertical;color:var(--ink);font-family:inherit;min-height:72px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#23211c;color:#fff;font-size:14px;padding:10px 22px;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:999}
+.toast.show{opacity:1}
+.modal-mask{position:fixed;inset:0;background:rgba(35,33,28,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-mask.hidden{display:none}
+.modal-box{background:var(--card);border-radius:16px;padding:26px 24px;max-width:340px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.22);text-align:center}
+.modal-q{font-size:18px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns .btn{flex:1;transition:background .18s,color .18s,border-color .18s}
+/* 两个选项起初颜色一致（中性描边），鼠标放上去再变色 */
+#modalNo:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+#modalYes:hover{background:var(--ok);color:#fff;border-color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>西方政治思想史 · 选择题刷题</h1>
+  <div class="sub">著作 ↔ 思想家 · 观点 → 思想家 · 命名观点 → 提出者　|　考前自测巩固</div>
+
+  <!-- 设置区 -->
+  <div id="setup">
+    <div class="panel">
+      <div class="label">练习范围（章节）</div>
+      <div class="chips" id="eraChips"></div>
+    </div>
+    <div class="panel">
+      <div class="label">题型</div>
+      <div class="chips" id="typeChips"></div>
+    </div>
+    <div class="panel">
+      <div class="label">题量</div>
+      <div class="chips" id="countChips"></div>
+      <div class="row">
+        <button class="btn" id="startBtn">开始刷题</button>
+        <button class="btn ghost" id="wrongBtn">只刷错题本 (<span id="wrongCount">0</span>)</button>
+      </div>
+      <div class="tip">提示：电脑上可用 <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> 选答案，<kbd>Enter</kbd> / <kbd>→</kbd> 下一题。错题会自动进入错题本，可反复重刷。</div>
+    </div>
+    <div class="panel">
+      <div class="label">错题本备份（关闭浏览器前导出，下次打开后导入）</div>
+      <div class="row" style="margin-top:0">
+        <button class="btn ghost" id="exportBtn">导出错题本</button>
+        <button class="btn ghost" id="importBtn">导入错题本</button>
+        <button class="btn ghost" id="clearWrongBtn" style="color:var(--bad);border-color:var(--bad)">清空错题本</button>
+      </div>
+      <textarea class="io-box hidden" id="ioBox" placeholder="导出后文字会出现在这里，复制保存；导入时把文字粘贴到这里再点「确认导入」"></textarea>
+      <button class="btn hidden" id="confirmImportBtn" style="margin-top:8px">确认导入</button>
+    </div>
+  </div>
+
+  <!-- 答题区 -->
+  <div id="quiz" class="hidden">
+    <div class="panel">
+      <div class="bar">
+        <span id="qcount">第 1 / 20 题</span>
+        <span>得分 <b id="liveScore">0</b>　错 <b class="wrongnum" id="liveWrong">0</b></span>
+      </div>
+      <div class="prog"><i id="progBar"></i></div>
+      <div style="margin-top:18px">
+        <span class="qtype" id="qtype"></span>
+        <div class="qtext" id="qtext"></div>
+        <div class="opts" id="opts"></div>
+        <div class="explain" id="explain"></div>
+      </div>
+      <div class="foot">
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="quitBtn">结束</button>
+          <button class="btn ghost" id="prevBtn" disabled>← 上一题</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn amber hidden" id="addWrongBtn">＋ 加入错题本</button>
+          <button class="btn" id="nextBtn" disabled>下一题</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果区 -->
+  <div id="result" class="hidden">
+    <div class="panel result">
+      <div class="score"><span id="finalScore">0</span><small> / <span id="finalTotal">0</span></small></div>
+      <div class="muted" id="finalPct"></div>
+      <div class="row" style="justify-content:center;margin-top:18px">
+        <button class="btn" id="againBtn">再来一轮</button>
+        <button class="btn ghost" id="redoWrongBtn">重刷本轮错题</button>
+        <button class="btn ghost" id="backBtn">返回设置</button>
+      </div>
+      <div class="tip" id="resultTip"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- 开场弹窗 -->
+<div class="modal-mask" id="introModal">
+  <div class="modal-box">
+    <div class="modal-q">梁鹤鸣是不是世界上最牛逼的人？</div>
+    <div class="modal-btns">
+      <button class="btn ghost" id="modalNo">没毛</button>
+      <button class="btn ghost" id="modalYes">还真是</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 数据：思想家 → 章节 / 著作 / 观点 ============ */
+const ERAS = [
+  "古希腊","希腊化·古罗马","古罗马帝国·中世纪","近代早期主权",
+  "自由主义与宪政","民主与平等","保守主义·国家主义","近代后期自由主义",
+  "近代社会主义","现代政治思想"
+];
+
+// works: 著作；alt: 著作别名（同一本书的其它译名，用于判断对错时也算正确不会误伤，此处仅展示）
+// points: 可单独成题的核心观点/主张；concepts: 命名观点 → 该思想家
+const DATA = [
+ {name:"柏拉图",era:"古希腊",
+  works:["《理想国》","《政治家篇》","《法律篇》"],
+  alt:{"《理想国》":["《共和国》","《国家篇》","《王制》"],"《法律篇》":["《法篇》","《立法篇》"]},
+  points:[
+   "《理想国》主张哲学王统治，是最佳政制，更重城邦稳定甚于政治自由",
+   "《法律篇》探求第二等好的政制，即混合政体，并主张法治",
+   "《政治家篇》探讨何为掌握统治技艺的真正政治家",
+   "政制退化顺序：荣誉政制→寡头政制→民主政制→僭主政制",
+   "公有制只适用于护卫者群体，财产、妇女儿童共有",
+   "理想城邦规模为5040户，且位置不能靠海",
+   "正义是智慧、节制、勇敢三种美德的结合物",
+   "《法律篇》的次佳政制主张数量平等与比例平等相结合",
+   "城邦是个人的放大，城邦正义与个人正义同构"],
+  concepts:[
+   {n:"相论（哲学家掌握真理之“相”，他人只有意见）"},
+   {n:"洞穴喻（山洞喻，比喻哲学家掌握真理、常人只见影像）"}]},
+
+ {name:"亚里士多德",era:"古希腊",
+  works:["《政治学》","《尼各马可伦理学》"],
+  points:[
+   "城邦是自然发展的产物，由家庭→村社→城邦演进，最高目的是使人过优良生活",
+   "正义分为分配正义、交换正义、矫正正义",
+   "理想政体是君主与贵族政体，可实现的优良政体是共和政体（中产阶级主导的混合政体+法治）",
+   "政体变革的根本原因是违反公共利益",
+   "政体是对城邦最高权力官职的制度安排，分议事、行政、审判三机构（只合作不制约）",
+   "普通公民的品质是中庸，政治家的首要品质是明智"]},
+
+ {name:"波利比乌斯",era:"希腊化·古罗马",
+  works:["《历史》"],
+  points:[
+   "判断政体好坏的标准从“是否正义”转向“是否能维护稳定”",
+   "提出政体循环论：君主→暴君→贵族→寡头→民主→暴民→回到君主",
+   "罗马的执政官、元老院、民众大会彼此合作与相互制约，是混合均衡政体"]},
+
+ {name:"西塞罗",era:"希腊化·古罗马",
+  works:["《国家篇》","《法律篇》"],
+  points:[
+   "国家是人民的事业，基于正义的协定和利益的共同",
+   "君主政体的优点是慈爱，贵族政体的优点是智慧，民众政府的优点是自由",
+   "自然法根植于人的自然本性，人们在道德人格上平等"]},
+
+ {name:"斯多葛学派",era:"希腊化·古罗马",
+  works:[],
+  points:[
+   "自然法是宇宙最高普遍法则，是一切现实法律的来源与评判标准",
+   "精神自由与外在境遇无关，理性是精神自由的基础",
+   "共有理性是人人平等的基础（道德人格上的平等）"]},
+
+ {name:"伊壁鸠鲁",era:"希腊化·古罗马",
+  works:[],
+  points:[
+   "快乐主义：快乐等于身体无痛苦加精神无纷扰",
+   "宇宙无序论：宇宙间无自然秩序与自然法则（原子偏斜运动）",
+   "正义不是绝对的，且参与政治不利于安静快乐",
+   "社会契约论：国家目的在于避免人们相互伤害"]},
+
+ {name:"查士丁尼",era:"希腊化·古罗马",
+  works:[],
+  points:[
+   "正义是持之以恒地给予每个人应得的部分",
+   "区分公民法与万民法，确立权利概念",
+   "发展斯多葛学派的自然平等思想"]},
+
+ {name:"奥古斯丁",era:"古罗马帝国·中世纪",
+  works:[],
+  points:[
+   "恩典论：个人是否得救完全取决于上帝的恩典，与信仰是否虔诚无关"],
+  concepts:[
+   {n:"双城论（上帝之城 vs 世人之城）"},
+   {n:"两剑论（上帝把两把剑分别交给教会和国王）"}]},
+
+ {name:"托马斯·阿奎那",era:"古罗马帝国·中世纪",
+  works:[],
+  points:[
+   "主要主张为国家起源（目的）论、混合政体论与法治论",
+   "国家起源融合亚里士多德（自然需求）与奥古斯丁（遏制罪恶）两种观点",
+   "主张教权高于王权，精神生活优先于世俗生活"]},
+
+ {name:"马西利乌斯",era:"古罗马帝国·中世纪",
+  works:["《和平的保卫者》"],
+  points:[
+   "国家自然产生，非上帝创造，与教会没有关系",
+   "人民拥有选举官吏权与立法权",
+   "最佳政制是民选君主制",
+   "教会是和平的破坏者，官吏是和平的保卫者"]},
+
+ {name:"马基雅维利",era:"近代早期主权",
+  works:["《君主论》","《论李维》"],
+  points:[
+   "是主权思想的先驱而非奠基者，本身没有主权概念",
+   "首次使用“stato”这一现代国家概念，并阐述“国家理由”思想",
+   "共和国优于君主国，共和国的基础是混合均衡、法治与公民美德",
+   "君主品格在于“妥善作恶”：只能出于国家利益而敢于、善于、节制地作恶",
+   "公民美德不再是政治追求的目标，而是共和国维系的基础",
+   "主张以公民常备军取代雇佣军"],
+  concepts:[{n:"恶棍假设（立法时必把人人设想为恶棍）"}]},
+
+ {name:"布丹",era:"近代早期主权",
+  works:["《国家论六卷》"],
+  alt:{"《国家论六卷》":["《共和国六书》"]},
+  points:[
+   "是主权理论的奠基者",
+   "主权是超乎公民与臣民之上、不受法律限制的权力，具有绝对性",
+   "主权的标志是立法权和发布命令权",
+   "主权不适用于自然法领域，君主不得侵犯臣民财产权、须遵守契约",
+   "混合政体不存在，因为它必然导致主权分割；最佳政体是君主制"]},
+
+ {name:"格劳秀斯",era:"近代早期主权",
+  works:["《战争与和平法》"],
+  points:[
+   "开启理性主义自然法理论，是绝对主权理论的发展者",
+   "将自然状态论与社会契约论结合，开启近代国家起源经典模式",
+   "主权不一定属于君主，但决不能属于人民",
+   "拓展主权内涵，提出对外主权（国家在国际关系层面的主权）"]},
+
+ {name:"霍布斯",era:"近代早期主权",
+  works:["《利维坦》"],
+  points:[
+   "是绝对主权理论的集大成者；人对横死的恐惧是政治生活的出发点",
+   "自然状态是“一切人对一切人的战争”状态",
+   "社会契约中主权者不参与订立契约，是契约之后的产物",
+   "主权至高无上、不受限制、不可分割",
+   "自我保存权是绝对的，臣民可越狱、流亡但不能联合反抗",
+   "只有当主权者无力保护臣民时，臣民才可解除服从义务"]},
+
+ {name:"哈林顿",era:"近代早期主权",
+  works:["《大洋国》"],
+  points:[
+   "财产（土地分配）的均势决定政府形式",
+   "反对君主专制、重申共和理想，主张“均分与选择”原则、代议制、法治"]},
+
+ {name:"斯宾诺莎",era:"近代早期主权",
+  works:["《神学政治论》","《政治论》"],
+  points:[
+   "主张在绝对主权的前提下保障公民的权利"]},
+
+ {name:"洛克",era:"自由主义与宪政",
+  works:["《政府论》","《论宗教宽容》","《人类理解论》"],
+  points:[
+   "自然状态是自由、平等、和平的状态（区别于霍布斯的战争状态）",
+   "自然权利包括生命权、自由权、财产权",
+   "提出双重主权：议会拥有最高立法权，人民拥有最终主权（仅在罢免立法机关时行使）",
+   "分权为立法权、执行权、对外权，由立法机构单向制约执行机构",
+   "合法政府的权力是有限的，非法政府来源于征服和篡夺",
+   "人民享有革命权：政府违背委托即为非法，人民可推翻暴政、解体旧政府"]},
+
+ {name:"孟德斯鸠",era:"自由主义与宪政",
+  works:["《论法的精神》"],
+  points:[
+   "法是由事物本性产生的必然关系",
+   "政体原则：民主靠品德、贵族靠节制、君主靠荣誉、专制靠恐怖",
+   "三权分立：立法权、行政权、司法权分属不同机构",
+   "将单向制约发展为相互制约，标志着西方分权制衡理论正式形成",
+   "政体与领土：共和适合小国、君主适合中等、专制适合大国"],
+  concepts:[{n:"权力休止论（一切有权力的人都容易滥用权力，直到遇到界限才休止）"}]},
+
+ {name:"联邦党人",era:"自由主义与宪政",
+  works:["《联邦党人文集》"],
+  points:[
+   "多元主义民主：人民形成不同集团、集团之间相互制衡（区别于卢梭的公意民主）",
+   "大国共和：代议制可实现共和，大国有利于消灭党争",
+   "立法机构最容易篡权（与人民联系密切、掌握财政权）",
+   "联邦法院应有违宪审查权",
+   "主张建立统一联邦而非松散邦联，以维护国家安全、商业自由与共和制度",
+   "党争无法消灭，只能控制其影响；制度设计包括总统立法否决权、两院制、违宪审查权"],
+  concepts:[{n:"人非天使论（人不是天使，故需要政府又须限制政府）"}]},
+
+ {name:"卢梭",era:"民主与平等",
+  works:["《社会契约论》","《论人类不平等的起源和基础》"],
+  points:[
+   "核心主张：人民主权是自由的根本保障",
+   "公意至高无上、不可转让、不可分割、永远正确，公意不等于众意",
+   "社会契约要求每个人向集体同等地转让全部权利",
+   "人民主权的内容是立法权，须直接行使，反对代议制",
+   "道德自由在于服从公意，使私人利益与公共利益一致",
+   "政府只是执行公意的中介机构，行政官受人民委托",
+   "主张小国直接民主、辅以联邦制，靠公民定期集会防范政府篡权"],
+  concepts:[{n:"公意（区别于众意、团体意志的全体意志）"}]},
+
+ {name:"西耶斯",era:"民主与平等",
+  works:["《第三等级是什么》"],
+  points:[
+   "区分制宪权与宪定权：制宪权只能由人民行使，宪定权由政府部门行使",
+   "人民并不直接行使制宪权，而是通过特殊代表，主张从直接民主走向代议民主"]},
+
+ {name:"潘恩",era:"民主与平等",
+  works:["《常识》","《人权论》"],
+  points:[
+   "政府是“免不了的祸害”，社会是积极的、政府是消极的",
+   "自由权、平等权等天赋人权不可转让，革命权也是天赋权利",
+   "宪法先于政府而存在，政府只是宪法的产物"]},
+
+ {name:"柏克",era:"保守主义·国家主义",
+  works:["《法国革命论》","《自由与传统》"],
+  points:[
+   "文明应在传统而非理性的基础上演进，反对理性主义",
+   "国家与政治制度应是生成的而非设计出来的",
+   "国家契约是永恒契约，人民没有革命权利",
+   "代议制并非民主制，而是选拔各地的“天然贵族”"]},
+
+ {name:"迈斯特",era:"保守主义·国家主义",
+  works:[],
+  points:[
+   "自然权利不存在，权利只能在社会关系中存在",
+   "人类注定只能成为臣民，天生适应君主制与等级制度",
+   "批判自由主义削弱了权威、宗教信仰与社群"]},
+
+ {name:"康德",era:"保守主义·国家主义",
+  works:["《法的形而上学原理》"],
+  points:[
+   "道德自由在于服从先验的“道德法则”和“善良意志”",
+   "公民没有革命权利，无论统治多糟糕",
+   "按治理方式划分：共和即分权、专制即不分权（民主也可能是专制）",
+   "区分积极公民与消极公民的标准是能否养活自己",
+   "国家源于公共意志与纯粹理性，目的是实现法律与公民自由的和谐",
+   "公民对国家只有申诉权，没有反抗权"]},
+
+ {name:"黑格尔",era:"保守主义·国家主义",
+  works:["《法哲学原理》"],
+  points:[
+   "国家高于个人，个人只有成为国家成员才有客观性",
+   "权力划分为普遍性的立法权、特殊性的行政权、单一性的王权",
+   "分权而不制衡，三权相互渗透而非相互限制",
+   "王权是最终决断权、是主权的化身，纯粹的人民主权不存在",
+   "世袭君主制优于选举君主制",
+   "伦理发展三阶段：家庭→市民社会→国家",
+   "义务优先于权利；推崇君主立宪制",
+   "国家间战争不可避免，日耳曼民族是世界历史的主导民族"]},
+
+ {name:"贡斯当",era:"近代后期自由主义",
+  works:["《古代人的自由与现代人的自由》"],
+  points:[
+   "古代人的自由是参与公共事务的权利，现代人的自由是不受社会和政治控制的权利",
+   "两种自由分野的根源是领土规模",
+   "王权是中立性权力，协调立法、行政、司法之间的冲突",
+   "人民主权应限制在同意权范围内"],
+  concepts:[{n:"道德链条论（开明专制依赖的品德链条一旦断裂便陷入危险）"}]},
+
+ {name:"托克维尔",era:"近代后期自由主义",
+  works:["《论美国的民主》"],
+  points:[
+   "民主是历史发展的必然，与身份平等相关",
+   "提出“多数的暴政”：大众绝对权威对个人自由的压制",
+   "无限权威有害论：任何人（包括人民）都无力行使无限权威",
+   "个人主义导致社会原子化，成为专制主义的助推器",
+   "防范专制要靠结社自由、乡镇自由与报刊自由"]},
+
+ {name:"密尔",era:"近代后期自由主义",
+  works:["《论自由》","《代议制政府》"],
+  points:[
+   "功利主义追求最大多数人的最大幸福，并主张快乐有质的区别",
+   "代议制政府是最好的政府，既能增进人民利益又能促进社会精神进步",
+   "真正的民主代表全体，虚假的民主仅仅代表多数",
+   "代议制兼具保护功能与精神教化功能，其弊病是议会无能与阶级立法",
+   "主张结合大众参与与精英统治"],
+  concepts:[{n:"群己权界论（界定社会、国家干预个人的权力边界）"}]},
+
+ {name:"莫尔",era:"近代社会主义",
+  works:["《乌托邦》"],
+  points:["空想社会主义代表，描绘了财产公有的理想社会“乌托邦”"]},
+
+ {name:"康帕内拉",era:"近代社会主义",
+  works:["《太阳城》"],
+  points:["空想社会主义代表，在《太阳城》中描绘公有制的理想城邦"]},
+
+ {name:"安德里亚",era:"近代社会主义",
+  works:["《基督城》"],
+  points:["16-17世纪空想社会主义代表，著有《基督城》"]},
+
+ {name:"圣西门",era:"近代社会主义",
+  works:[],
+  points:["主张五阶段历史划分与实业制度，按劳分配并预言国家消亡"]},
+
+ {name:"傅立叶",era:"近代社会主义",
+  works:[],
+  points:["提出情欲引力规律、四阶段历史划分，理想组织为“法郎吉”"]},
+
+ {name:"欧文",era:"近代社会主义",
+  works:[],
+  points:["空想社会主义代表，进行“和谐新公社”的共产主义实验"]},
+
+ {name:"摩莱里",era:"近代社会主义",
+  works:[],
+  points:["空想共产主义代表，主张以“共产主义法典”构建法制化的共产主义社会"]},
+
+ {name:"马布利",era:"近代社会主义",
+  works:[],
+  points:["空想共产主义代表，倡导禁欲主义的共产主义"]},
+
+ {name:"巴贝夫",era:"近代社会主义",
+  works:[],
+  points:["主张人民革命与人民专政，建立共产主义公社"]},
+
+ {name:"费边主义",era:"近代社会主义",
+  works:[],
+  points:["社会民主主义流派，主张渐进改良、和平长入社会主义，不触动资本主义制度"]},
+
+ {name:"伯恩施坦",era:"近代社会主义",
+  works:[],
+  points:["认为暴力革命已过时，主张议会斗争“和平长入社会主义”，否定无产阶级专政"]},
+
+ {name:"考茨基",era:"近代社会主义",
+  works:[],
+  points:["主张依托资产阶级议会框架开展工人运动、实现无产阶级掌权"]},
+];
+
+// 现代政治思想（批判方向）：观点 → 思想家
+const MODERN = [
+ {name:"熊彼特",era:"现代政治思想",points:[
+   "批判人民主权，认为人民主权无法实现",
+   "提出精英民主论：民众仅拥有选择统治者的权利"]},
+ {name:"阿伦特",era:"现代政治思想",points:["以批判极权主义著称，剖析极权主义的形成逻辑与危害"]},
+ {name:"伯林",era:"现代政治思想",points:[
+   "批判政治至善论，认为政治家追求的理想并非人民的理想",
+   "坚持多元主义，批判一元主义"],
+  concepts:[{n:"积极自由与消极自由（两种自由概念的划分）"}]},
+ {name:"奥克肖特",era:"现代政治思想",points:["批判政治至善论，认为其建立在理性主义的自负上，实践应建立在经验之上"]},
+ {name:"波普尔",era:"现代政治思想",points:["认为根本不存在历史规律，反对“乌托邦工程”，主张零星社会改良"]},
+ {name:"哈耶克",era:"现代政治思想",points:[
+   "批判苏联社会主义，认为公有制、计划经济会导致财产集中",
+   "指出计划经济使“不服从者不得食”，捍卫自由市场"]},
+ {name:"哈贝马斯",era:"现代政治思想",points:[
+   "分析晚期资本主义危机，认为工具理性取代了价值理性",
+   "提出交往理性，主张重建社会沟通秩序"]},
+ {name:"施密特",era:"现代政治思想",points:["批判自由主义价值中立，认为其无法区分敌友、无力做出政治决断"]},
+ {name:"麦金泰尔",era:"现代政治思想",points:["社群主义代表，批判现代规则伦理取代传统美德伦理，导致相对主义与虚无主义"]},
+ {name:"施特劳斯",era:"现代政治思想",points:[
+   "批判现代性，认为现代进步导向道德相对主义与虚无主义",
+   "指出哲学与城邦存在内在冲突"]},
+ {name:"罗尔斯",era:"现代政治思想",
+  works:["《正义论》"],
+  points:[
+   "主张分配正义，支持国家调节收入分配、采用累进税"]},
+ {name:"诺齐克",era:"现代政治思想",points:[
+   "批判罗尔斯，反对国家过度干预分配，捍卫个人权利与有限国家",
+   "主张比例税（反对累进税）"]},
+];
+
+const ALL = DATA.concat(MODERN);
+
+/* ============ 工具 ============ */
+const $=s=>document.querySelector(s);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+let toastTimer=null;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2200)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function sample(a,n,exclude){const pool=a.filter(x=>!exclude.includes(x));return shuffle(pool).slice(0,n)}
+
+const TYPES=[
+ {id:"w2a",name:"著作→思想家"},
+ {id:"a2w",name:"思想家→著作"},
+ {id:"p2a",name:"观点→思想家"},
+ {id:"c2a",name:"命名观点→提出者"},
+];
+
+/* ============ 出题 ============ */
+// 在选定章节、选定题型内生成一道题
+function makeQuestion(pool, types){
+  // 多次尝试，直到能在所选 pool/types 内造出题
+  for(let t=0;t<40;t++){
+    const type=rnd(types);
+    if(type==="w2a"){
+      const cands=pool.filter(p=>p.works&&p.works.length);
+      if(!cands.length) continue;
+      const who=rnd(cands); const work=rnd(who.works);
+      const distractPool=othersWithDistinctName(ALL,who.name);
+      const distract=sample(distractPool.map(p=>p.name),3,[who.name]);
+      if(distract.length<3) continue;
+      return buildQ("著作→思想家",`著作 <span class="hl">${work}</span> 的作者是哪位思想家？`,who.name,distract,who);
+    }
+    if(type==="a2w"){
+      const cands=pool.filter(p=>p.works&&p.works.length);
+      if(!cands.length) continue;
+      const who=rnd(cands); const work=rnd(who.works);
+      // 干扰：其他思想家的著作
+      const otherWorks=[];
+      ALL.forEach(p=>{if(p.name!==who.name&&p.works) p.works.forEach(w=>otherWorks.push(w))});
+      const distract=sample(otherWorks,3,who.works);
+      if(distract.length<3) continue;
+      return buildQ("思想家→著作",`以下哪部著作是 <span class="hl">${who.name}</span> 的作品？`,work,distract,who);
+    }
+    if(type==="p2a"){
+      const cands=pool.filter(p=>p.points&&p.points.length);
+      if(!cands.length) continue;
+      const who=rnd(cands); const pt=rnd(who.points);
+      const distract=sample(ALL.map(p=>p.name),3,[who.name]);
+      if(distract.length<3) continue;
+      return buildQ("观点→思想家",`“<span class="hl">${pt}</span>”——这一主张出自哪位思想家？`,who.name,distract,who);
+    }
+    if(type==="c2a"){
+      const cands=pool.filter(p=>p.concepts&&p.concepts.length);
+      if(!cands.length) continue;
+      const who=rnd(cands); const c=rnd(who.concepts);
+      const distract=sample(ALL.map(p=>p.name),3,[who.name]);
+      if(distract.length<3) continue;
+      return buildQ("命名观点→提出者",`<span class="hl">${c.n}</span> 是哪位思想家提出的？`,who.name,distract,who);
+    }
+  }
+  return null;
+}
+function othersWithDistinctName(arr,name){return arr.filter(p=>p.name!==name)}
+
+function buildQ(typeName,text,correct,distract,who){
+  const opts=shuffle([correct,...distract]);
+  return {typeName,text,correct,opts,who};
+}
+
+/* ============ 状态 ============ */
+let state={eras:new Set(ERAS), types:new Set(TYPES.map(t=>t.id)), count:20,
+  queue:[], idx:0, score:0, wrong:0, roundWrong:[], answered:false, answers:[]};
+let wrongBank=loadWrongBank();
+
+const SKEY='wpt_wrong';
+// localStorage 作持久化（关闭后重开仍在）；window.name 作备份（刷新必定保留，file:// 下也可靠）
+function lsGet(){try{return localStorage.getItem(SKEY)}catch(e){return null}}
+function lsSet(v){try{localStorage.setItem(SKEY,v)}catch(e){}}
+function wnGet(){try{const w=JSON.parse(window.name||'{}');return w.__wpt||null}catch(e){return null}}
+function wnSet(v){try{let w={};try{w=JSON.parse(window.name||'{}')}catch(e){}w.__wpt=v;window.name=JSON.stringify(w)}catch(e){}}
+function loadWrongBank(){
+  let raw=lsGet(); if(!raw) raw=wnGet();
+  try{return JSON.parse(raw||'[]')}catch(e){return[]}
+}
+function saveWrongBank(){
+  const v=JSON.stringify(wrongBank.slice(-200));
+  lsSet(v); wnSet(v);
+}
+
+/* ============ 渲染设置区 ============ */
+function renderSetup(){
+  const ec=$("#eraChips"); ec.innerHTML="";
+  // 全选项
+  const allChip=mkChip("全部章节",state.eras.size===ERAS.length,()=>{
+    if(state.eras.size===ERAS.length){state.eras.clear()} else {ERAS.forEach(e=>state.eras.add(e))}
+    renderSetup();
+  });
+  ec.appendChild(allChip);
+  ERAS.forEach(e=>{
+    ec.appendChild(mkChip(e,state.eras.has(e),()=>{
+      state.eras.has(e)?state.eras.delete(e):state.eras.add(e); renderSetup();
+    }));
+  });
+  const tc=$("#typeChips"); tc.innerHTML="";
+  TYPES.forEach(t=>{
+    tc.appendChild(mkChip(t.name,state.types.has(t.id),()=>{
+      state.types.has(t.id)?state.types.delete(t.id):state.types.add(t.id); renderSetup();
+    }));
+  });
+  const cc=$("#countChips"); cc.innerHTML="";
+  [10,20,30,50].forEach(n=>{
+    cc.appendChild(mkChip(n+" 题",state.count===n,()=>{state.count=n;renderSetup()}));
+  });
+  $("#wrongCount").textContent=wrongBank.length;
+  $("#wrongBtn").disabled=wrongBank.length===0;
+}
+function mkChip(label,on,fn){
+  const d=document.createElement("div");
+  d.className="chip"+(on?" on":""); d.textContent=label; d.onclick=fn; return d;
+}
+
+/* ============ 开始一轮 ============ */
+function buildQueue(){
+  const pool=ALL.filter(p=>state.eras.has(p.era));
+  const types=[...state.types];
+  const q=[]; const seen=new Set(); let guard=0;
+  // 阶段一：尽量凑不重复的题
+  while(q.length<state.count && guard<state.count*40){
+    guard++;
+    const item=makeQuestion(pool,types);
+    if(!item){ if(guard>80 && q.length===0) break; continue; }
+    const sig=item.typeName+"|"+item.text;
+    if(seen.has(sig)) continue;
+    seen.add(sig); q.push(item);
+  }
+  // 阶段二：所选范围内不重复题目不够时，允许重复以补足要求的题量
+  if(q.length>0 && q.length<state.count){
+    let g2=0;
+    while(q.length<state.count && g2<state.count*40){
+      g2++; const item=makeQuestion(pool,types); if(item) q.push(item);
+    }
+  }
+  return q;
+}
+function startRound(queue){
+  if(!queue||!queue.length){alert("当前所选范围/题型无法生成题目，请多选一些章节或题型。");return}
+  state.queue=queue; state.idx=0; state.score=0; state.wrong=0; state.roundWrong=[]; state.answered=false; state.answers=[];
+  $("#setup").classList.add("hidden"); $("#result").classList.add("hidden");
+  $("#quiz").classList.remove("hidden");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=state.queue[state.idx];
+  state.answered=false;
+  $("#qcount").textContent=`第 ${state.idx+1} / ${state.queue.length} 题`;
+  $("#liveScore").textContent=state.score;
+  $("#liveWrong").textContent=state.wrong;
+  $("#progBar").style.width=(state.idx/state.queue.length*100)+"%";
+  $("#qtype").textContent=q.typeName;
+  $("#qtext").innerHTML=q.text;
+  const oc=$("#opts"); oc.innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const d=document.createElement("div");
+    d.className="opt"; d.dataset.val=o;
+    d.innerHTML=`<span class="k">${"ABCD"[i]}</span><span>${o}</span>`;
+    d.onclick=()=>choose(o,d);
+    oc.appendChild(d);
+  });
+  const ex=$("#explain"); ex.className="explain"; ex.innerHTML="";
+  $("#nextBtn").disabled=true;
+  $("#nextBtn").textContent = state.idx===state.queue.length-1 ? "查看结果" : "下一题";
+  $("#prevBtn").disabled = state.idx===0;
+  // 重置"加入错题本"按钮
+  const ab=$("#addWrongBtn"); ab.classList.add("hidden"); ab.classList.remove("added"); ab.textContent="＋ 加入错题本";
+  // 如果这道题已经回答过（从上一题返回时），还原已答状态
+  const prev=state.answers[state.idx];
+  if(prev){
+    state.answered=true;
+    document.querySelectorAll(".opt").forEach(o=>{
+      o.classList.add("locked");
+      const v=o.dataset.val;
+      const q=state.queue[state.idx];
+      if(v===q.correct) o.classList.add("correct");
+      else if(v===prev.chosen&&!prev.wasCorrect) o.classList.add("wrong");
+      else o.classList.add("dim");
+    });
+    renderExplain(state.queue[state.idx], prev.wasCorrect, prev.chosen);
+    $("#nextBtn").disabled=false;
+    ab.classList.remove("hidden");
+    if(!prev.wasCorrect){ab.classList.add("added");ab.textContent="✓ 已加入错题本";}
+  }
+}
+
+function choose(val,el){
+  if(state.answered) return;
+  state.answered=true;
+  const q=state.queue[state.idx];
+  const correct=val===q.correct;
+  document.querySelectorAll(".opt").forEach(o=>{
+    o.classList.add("locked");
+    const v=o.dataset.val;
+    if(v===q.correct) o.classList.add("correct");
+    else if(o===el) o.classList.add("wrong");
+    else o.classList.add("dim");
+  });
+  if(correct){state.score++;}
+  else{
+    state.wrong++; state.roundWrong.push(q);
+    // 存入错题本（去重）
+    const sig=q.typeName+"|"+q.text;
+    if(!wrongBank.some(w=>w.typeName+"|"+w.text===sig)){
+      wrongBank.push({typeName:q.typeName,text:q.text,correct:q.correct,opts:q.opts,who:q.who});
+      saveWrongBank();
+    }
+  }
+  $("#liveScore").textContent=state.score;
+  $("#liveWrong").textContent=state.wrong;
+  state.answers[state.idx]={chosen:val, wasCorrect:correct};
+  renderExplain(q, correct, val);
+  $("#nextBtn").disabled=false;
+  $("#progBar").style.width=((state.idx+1)/state.queue.length*100)+"%";
+  // 答对时显示"加入错题本"；答错时已自动加入，按钮显示为已添加状态
+  const ab=$("#addWrongBtn"); ab.classList.remove("hidden");
+  if(!correct){ab.classList.add("added");ab.textContent="✓ 已加入错题本";}
+}
+
+function renderExplain(q, correct, chosen){
+  const who=q.who;
+  let tags="";
+  if(who.works&&who.works.length) tags+=who.works.map(w=>`<span class="tag">${w}</span>`).join("");
+  const pts=(who.points||[]).slice(0,3).map(p=>"· "+p).join("<br>");
+  const ex=$("#explain"); ex.className="explain show";
+  ex.innerHTML=`<b>${correct?"✓ 正确":"✗ 正确答案："+q.correct}</b>　【${who.era}】${tags?"<br>代表著作："+tags:""}${pts?"<br>"+pts:""}`;
+}
+
+function nextQuestion(){
+  if(!state.answered) return;
+  if(state.idx<state.queue.length-1){state.idx++; renderQuestion();}
+  else finish();
+}
+function prevQuestion(){
+  if(state.idx===0) return;
+  state.idx--; renderQuestion();
+}
+
+function finish(){
+  $("#quiz").classList.add("hidden");
+  $("#result").classList.remove("hidden");
+  $("#finalScore").textContent=state.score;
+  $("#finalTotal").textContent=state.queue.length;
+  const pct=Math.round(state.score/state.queue.length*100);
+  $("#finalPct").textContent=`正确率 ${pct}%　|　答错 ${state.wrong} 题`;
+  let tip="";
+  if(pct>=90) tip="掌握得很扎实，临场细看易混对（布丹vs霍布斯、卢梭vs洛克）即可。";
+  else if(pct>=70) tip="基础不错，重点回看本轮错题和“命名观点→提出者”那几道。";
+  else tip="建议先按单个章节分块刷，配合右上角错题本反复巩固。";
+  if(wrongBank.length) tip+=` 错题本已累计 ${wrongBank.length} 题。`;
+  $("#resultTip").textContent=tip;
+  $("#redoWrongBtn").style.display=state.roundWrong.length?"":"none";
+}
+
+/* ============ 事件 ============ */
+$("#startBtn").onclick=()=>startRound(buildQueue());
+$("#wrongBtn").onclick=()=>{
+  if(!wrongBank.length) return;
+  const q=shuffle(wrongBank.map(w=>({...w,opts:shuffle(w.opts)})));
+  startRound(q);
+};
+$("#nextBtn").onclick=nextQuestion;
+$("#prevBtn").onclick=prevQuestion;
+$("#quitBtn").onclick=()=>{state.queue=state.queue.slice(0,state.idx+1);finish();};
+$("#againBtn").onclick=()=>startRound(buildQueue());
+$("#redoWrongBtn").onclick=()=>{
+  const q=shuffle(state.roundWrong.map(w=>({...w,opts:shuffle(w.opts)})));
+  startRound(q);
+};
+$("#backBtn").onclick=()=>{
+  $("#result").classList.add("hidden"); $("#setup").classList.remove("hidden"); renderSetup();
+};
+document.addEventListener("keydown",e=>{
+  if($("#quiz").classList.contains("hidden")) return;
+  if(["1","2","3","4"].includes(e.key)){
+    const els=document.querySelectorAll(".opt");
+    const i=+e.key-1; if(els[i]&&!state.answered) els[i].click();
+  } else if(e.key==="Enter"||e.key==="ArrowRight"){
+    if(state.answered) nextQuestion();
+  } else if(e.key==="ArrowLeft"){
+    prevQuestion();
+  }
+});
+
+// ===== 手动加入错题本 =====
+$("#addWrongBtn").onclick=function(){
+  if(this.classList.contains("added")) return;
+  const q=state.queue[state.idx];
+  const sig=q.typeName+"|"+q.text;
+  if(!wrongBank.some(w=>w.typeName+"|"+w.text===sig)){
+    wrongBank.push({typeName:q.typeName,text:q.text,correct:q.correct,opts:q.opts,who:q.who});
+    saveWrongBank();
+  }
+  this.classList.add("added"); this.textContent="✓ 已加入错题本";
+  toast("已加入错题本");
+  renderSetup(); // 刷新首页错题数
+};
+
+// ===== 导出 / 导入 / 清空 =====
+function addWrongToBank(list){
+  let added=0;
+  list.forEach(w=>{
+    const sig=w.typeName+"|"+w.text;
+    if(!wrongBank.some(x=>x.typeName+"|"+x.text===sig)){wrongBank.push(w);added++;}
+  });
+  saveWrongBank(); renderSetup(); return added;
+}
+
+$("#exportBtn").onclick=function(){
+  if(!wrongBank.length){toast("错题本是空的");return;}
+  const box=$("#ioBox"),ci=$("#confirmImportBtn");
+  box.value=JSON.stringify(wrongBank);
+  box.classList.remove("hidden"); ci.classList.add("hidden");
+  box.select(); try{document.execCommand("copy");toast("已复制到剪贴板，也可以手动从下方文本框复制");}catch(e){toast("请手动复制下方文本框内容");}
+};
+
+$("#importBtn").onclick=function(){
+  const box=$("#ioBox"),ci=$("#confirmImportBtn");
+  box.value=""; box.classList.remove("hidden"); ci.classList.remove("hidden");
+  box.placeholder="把导出的文字粘贴到这里，然后点「确认导入」";
+  box.focus();
+};
+
+$("#confirmImportBtn").onclick=function(){
+  try{
+    const list=JSON.parse($("#ioBox").value.trim());
+    if(!Array.isArray(list)) throw new Error();
+    const n=addWrongToBank(list);
+    toast(`导入成功，新增 ${n} 题（重复已跳过）`);
+    $("#ioBox").classList.add("hidden"); this.classList.add("hidden");
+  }catch(e){toast("格式不对，请粘贴完整的导出内容");}
+};
+
+$("#clearWrongBtn").onclick=function(){
+  if(!wrongBank.length){toast("错题本已经是空的");return;}
+  if(!confirm(`确定清空全部 ${wrongBank.length} 道错题吗？`)) return;
+  wrongBank=[]; saveWrongBank(); renderSetup(); toast("错题本已清空");
+  $("#ioBox").classList.add("hidden"); $("#confirmImportBtn").classList.add("hidden");
+};
+
+// ===== 开场弹窗（两个选项都可关闭，无关闭叉）=====
+(function(){
+  const m=$("#introModal");
+  const close=()=>m.classList.add("hidden");
+  $("#modalNo").onclick=close;
+  $("#modalYes").onclick=close;
+})();
+
+renderSetup();
+</script>
+</body>
+</html>
