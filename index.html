@@ -69,6 +69,12 @@ kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bott
 .modal-q{font-size:18px;font-weight:700;color:var(--ink);line-height:1.5;margin-bottom:20px}
 .modal-btns{display:flex;gap:10px}
 .modal-btns .btn{flex:1;transition:background .18s,color .18s,border-color .18s}
+.gate-input{width:100%;font-size:16px;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fafaf8;color:var(--ink);margin-bottom:14px;text-align:center}
+.gate-input:focus{outline:none;border-color:var(--accent)}
+.gate-hint{font-size:12px;color:var(--ink3);margin-top:12px}
+.blocked{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2000;color:var(--ink2);text-align:center;padding:30px;gap:10px}
+.blocked .big{font-size:40px}
+.blocked .t{font-size:18px;font-weight:700;color:var(--ink)}
 /* 两个选项起初颜色一致（中性描边），鼠标放上去再变色 */
 #modalNo:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
 #modalYes:hover{background:var(--ok);color:#fff;border-color:var(--ok)}
@@ -153,8 +159,20 @@ kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bott
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- 验证弹窗（答对才能进入）-->
+<div class="modal-mask" id="gateModal">
+  <div class="modal-box">
+    <div class="modal-q">梁鹤鸣在 2025-2026 赛季身穿几号国政队球衣？</div>
+    <input class="gate-input" id="gateInput" type="text" inputmode="numeric" placeholder="请输入号码" autocomplete="off">
+    <div class="modal-btns">
+      <button class="btn" id="gateSubmit" style="flex:1">确认</button>
+    </div>
+    <div class="gate-hint">仅限熟悉梁鹤鸣的人进入</div>
+  </div>
+</div>
+
 <!-- 开场弹窗 -->
-<div class="modal-mask" id="introModal">
+<div class="modal-mask hidden" id="introModal">
   <div class="modal-box">
     <div class="modal-q">梁鹤鸣是不是世界上最牛逼的人？</div>
     <div class="modal-btns">
@@ -860,6 +878,28 @@ $("#clearWrongBtn").onclick=function(){
   wrongBank=[]; saveWrongBank(); renderSetup(); toast("错题本已清空");
   $("#ioBox").classList.add("hidden"); $("#confirmImportBtn").classList.add("hidden");
 };
+
+// ===== 验证弹窗：答对(11)进入，答错则封锁页面 =====
+(function(){
+  const gate=$("#gateModal"), input=$("#gateInput");
+  function pass(){
+    gate.classList.add("hidden");
+    $("#introModal").classList.remove("hidden");
+  }
+  function block(){
+    // 浏览器不允许脚本关闭用户打开的标签页，这里用清空+遮罩等效“无法使用”
+    try{window.close();}catch(e){}
+    document.body.innerHTML='<div class="blocked"><div class="big">🔒</div>'
+      +'<div class="t">你竟然不知道梁鹤鸣是国政最强十一号？</div></div>';
+  }
+  function submit(){
+    const ans=(input.value||"").replace(/[^0-9]/g,""); // 取数字，"11""11号"均可
+    if(ans==="11") pass(); else block();
+  }
+  $("#gateSubmit").onclick=submit;
+  input.addEventListener("keydown",e=>{ if(e.key==="Enter") submit(); });
+  input.focus();
+})();
 
 // ===== 开场弹窗（两个选项都可关闭，无关闭叉）=====
 (function(){
