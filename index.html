@@ -78,10 +78,49 @@ kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bott
 /* 两个选项起初颜色一致（中性描边），鼠标放上去再变色 */
 #modalNo:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
 #modalYes:hover{background:var(--ok);color:#fff;border-color:var(--ok)}
+/* 课程选择 */
+.course-grid{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.course-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;cursor:pointer;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.course-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(122,92,255,.13)}
+.course-card h2{font-size:19px;font-weight:700;margin-bottom:6px}
+.course-card p{font-size:13px;color:var(--ink3)}
+.course-card .badge{display:inline-block;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:6px;margin-top:11px}
+.switch-link{font-size:13px;color:var(--ink3);cursor:pointer;display:inline-block;margin-bottom:6px}
+.switch-link:hover{color:var(--accent)}
+/* 不定项多选 */
+.opt .box{width:19px;height:19px;border:1.6px solid var(--ink3);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;line-height:1}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.opt.sel .k{color:var(--accent)}
+.opt.sel .box{background:var(--accent);border-color:var(--accent)}
+.opt.correct .box{background:var(--ok);border-color:var(--ok)}
+.opt.wrong .box{background:var(--bad);border-color:var(--bad)}
+.opt.miss{background:var(--ok-bg);border-color:var(--ok)}
+.multi-hint{font-size:12px;color:var(--ink3);margin-bottom:10px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <!-- 课程选择页（牛逼弹窗之后出现）-->
+  <div id="courseSelect" class="hidden">
+    <h1>选择刷题课程</h1>
+    <div class="sub">梁鹤鸣的期末速成题库</div>
+    <div class="course-grid">
+      <div class="course-card" id="cardPoli">
+        <h2>西方政治思想史</h2>
+        <p>思想家 · 著作 · 核心观点 —— 四选一单选</p>
+        <span class="badge">53 位思想家 · 自动组卷</span>
+      </div>
+      <div class="course-card" id="cardIR">
+        <h2>西方国际关系理论概论</h2>
+        <p>现实主义 · 自由主义 · 建构主义 —— 四选项不定项</p>
+        <span class="badge">70 题 · 错选少选不得分</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 课程一：西方政治思想史 -->
+  <div id="poliApp" class="hidden">
+  <span class="switch-link" id="poliSwitch">← 切换课程</span>
   <h1>西方政治思想史 · 选择题刷题</h1>
   <div class="sub">著作 ↔ 思想家 · 观点 → 思想家 · 命名观点 → 提出者　|　考前自测巩固</div>
 
@@ -156,6 +195,84 @@ kbd{font-family:inherit;background:#fff;border:1px solid var(--line);border-bott
       <div class="tip" id="resultTip"></div>
     </div>
   </div>
+  </div><!-- /poliApp -->
+
+  <!-- 课程二：西方国际关系理论概论（四选项不定项）-->
+  <div id="irApp" class="hidden">
+  <span class="switch-link" id="irSwitch">← 切换课程</span>
+  <h1>西方国际关系理论 · 不定项刷题</h1>
+  <div class="sub">四个选项 · 不定项选择 · 错选、少选均不得分　|　考前自测巩固</div>
+
+  <!-- 设置区 -->
+  <div id="irSetup">
+    <div class="panel">
+      <div class="label">练习范围（模块）</div>
+      <div class="chips" id="irModChips"></div>
+    </div>
+    <div class="panel">
+      <div class="label">题量</div>
+      <div class="chips" id="irCountChips"></div>
+      <div class="row">
+        <button class="btn" id="irStartBtn">开始刷题</button>
+        <button class="btn ghost" id="irWrongBtn">只刷错题本 (<span id="irWrongCount">0</span>)</button>
+      </div>
+      <div class="tip">提示：电脑上可用 <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> 勾选/取消选项，<kbd>Enter</kbd> 提交答案，再按 <kbd>Enter</kbd> / <kbd>→</kbd> 下一题。不定项需把正确选项全部选中，错选、少选均不得分。</div>
+    </div>
+    <div class="panel">
+      <div class="label">错题本备份（关闭浏览器前导出，下次打开后导入）</div>
+      <div class="row" style="margin-top:0">
+        <button class="btn ghost" id="irExportBtn">导出错题本</button>
+        <button class="btn ghost" id="irImportBtn">导入错题本</button>
+        <button class="btn ghost" id="irClearWrongBtn" style="color:var(--bad);border-color:var(--bad)">清空错题本</button>
+      </div>
+      <textarea class="io-box hidden" id="irIoBox" placeholder="导出后文字会出现在这里，复制保存；导入时把文字粘贴到这里再点「确认导入」"></textarea>
+      <button class="btn hidden" id="irConfirmImportBtn" style="margin-top:8px">确认导入</button>
+    </div>
+  </div>
+
+  <!-- 答题区 -->
+  <div id="irQuiz" class="hidden">
+    <div class="panel">
+      <div class="bar">
+        <span id="irQcount">第 1 / 20 题</span>
+        <span>得分 <b id="irLiveScore">0</b>　错 <b class="wrongnum" id="irLiveWrong">0</b></span>
+      </div>
+      <div class="prog"><i id="irProgBar"></i></div>
+      <div style="margin-top:18px">
+        <span class="qtype" id="irQtype"></span>
+        <div class="qtext" id="irQtext"></div>
+        <div class="multi-hint">不定项：可多选，选全正确项才得分</div>
+        <div class="opts" id="irOpts"></div>
+        <div class="explain" id="irExplain"></div>
+      </div>
+      <div class="foot">
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost" id="irQuitBtn">结束</button>
+          <button class="btn ghost" id="irPrevBtn" disabled>← 上一题</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn amber hidden" id="irAddWrongBtn">＋ 加入错题本</button>
+          <button class="btn" id="irSubmitBtn">提交答案</button>
+          <button class="btn hidden" id="irNextBtn">下一题</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果区 -->
+  <div id="irResult" class="hidden">
+    <div class="panel result">
+      <div class="score"><span id="irFinalScore">0</span><small> / <span id="irFinalTotal">0</span></small></div>
+      <div class="muted" id="irFinalPct"></div>
+      <div class="row" style="justify-content:center;margin-top:18px">
+        <button class="btn" id="irAgainBtn">再来一轮</button>
+        <button class="btn ghost" id="irRedoWrongBtn">重刷本轮错题</button>
+        <button class="btn ghost" id="irBackBtn">返回设置</button>
+      </div>
+      <div class="tip" id="irResultTip"></div>
+    </div>
+  </div>
+  </div><!-- /irApp -->
 </div>
 <div class="toast" id="toast"></div>
 
@@ -881,6 +998,238 @@ $("#clearWrongBtn").onclick=function(){
   $("#ioBox").classList.add("hidden"); $("#confirmImportBtn").classList.add("hidden");
 };
 
+/* ===== 国关题库（不定项，共 70 题）===== */
+const IR_DATA=[
+ {m:"方法论与理论基础",q:"关于社会科学与自然科学的区别，下列正确的有：",o:["社会科学研究对象具有主观能动性","研究行为可能引发自我实现或自我否定的预言","社会科学研究对象之间本质相同、相似性高","社会科学的对象与主体都受价值观、情感等非物质因素影响"],a:[0,1,3],e:"C错：社会科学对象之间相似性极低、差异性极高，并非本质相同。"},
+ {m:"方法论与理论基础",q:"关于「理论」，下列表述正确的有：",o:["理论是对可观察、重复出现现象的一般性解释","理论的核心是对因果关系和因果机制的一般性说明","评价理论的标准包括内部逻辑自洽、核心命题可证伪","理论追求解释范围尽可能广、本身尽可能简约（奥卡姆剃刀）"],a:[0,1,2,3],e:"四项均为理论的基本特征与评价标准。"},
+ {m:"方法论与理论基础",q:"「范式」的三个界定维度包括：",o:["本原：社会的本原是物质还是观念","本质：国际关系的本质是冲突还是合作","本体：主要行为体是国家，还是含非国家行为体","本源：理论的创始人是谁"],a:[0,1,2],e:"范式三维度为本原、本质、本体；D为虚构。"},
+ {m:"方法论与理论基础",q:"关于可证伪性，下列正确的有：",o:["是评价科学理论的核心标准之一","指理论核心命题能被经验事实检验、推翻","理论若无论出现何种事实都能自圆其说，则丧失科学性","民主和平论因概念界定不统一出现循环论证，是其可证伪性受批评的例子"],a:[0,1,2,3],e:"四项均正确。可证伪性即可检验性。"},
+ {m:"方法论与理论基础",q:"按多尔蒂分类，下列属于「大理论」的有：",o:["结构现实主义","古典现实主义","新自由制度主义","建构主义"],a:[0,1,2,3],e:"大理论=解释范围广：结构现实、古典现实、新自由制度、建构主义。"},
+ {m:"方法论与理论基础",q:"关于四次论战，下列对应正确的有：",o:["第一次：理想主义 vs 现实主义","第二次：传统主义 vs 行为主义（方法论之争）","第三次：新现实主义 vs 新自由主义","第四次：理性主义 vs 建构主义"],a:[0,1,2,3],e:"四次论战对应均正确。注意方法论之争是第二次而非第一次。"},
+ {m:"方法论与理论基础",q:"关于第二次论战（方法论之争），下列正确的有：",o:["传统主义以赫德利·布尔为代表，主张古典方法、沉浸式研究","行为主义以卡普兰、辛格为代表，主张定量化、形式化","论战结果是行为主义取得压倒性胜利","论战确立了国关学的社会科学属性，两种方法继续并存"],a:[0,1,3],e:"C错：无一方取得压倒性胜利，两法并存。"},
+ {m:"方法论与理论基础",q:"关于反思主义，下列正确的有：",o:["是冷战后兴起的思潮","包括批判理论、女性理论、后现代主义","后实证主义是其分支","建构主义属于反思主义，坚持后实证主义认识论"],a:[0,1,2],e:"D错：建构主义认识论坚持实证主义，是第三范式，不属反思主义。"},
+ {m:"方法论与理论基础",q:"「反思主义三流派」包括：",o:["批判理论","女性理论","后现代主义","后实证主义"],a:[0,1,2],e:"D错：后实证主义是其认识论，不是独立流派。"},
+ {m:"方法论与理论基础",q:"第二次论战（方法论之争）的双方与代表是：",o:["传统主义—布尔","行为主义—卡普兰、辛格","理想主义—威尔逊","现实主义—摩根索"],a:[0,1],e:"C、D是第一次论战（理想主义vs现实主义）的双方。"},
+ {m:"方法论与理论基础",q:"关于「范式」，下列表述正确的有：",o:["范式是对社会基本事实的一组假定，具一定模糊性","相同范式=遵循相同的一组假定","相同范式=观点相同或研究问题相似","库恩据范式进行理论分类"],a:[0,1,3],e:"C错：相同范式指假定相同，而非观点相同或问题相似（高频陷阱）。"},
+ {m:"现实主义",q:"关于霍布斯「自然状态」，下列正确的有：",o:["指没有公权力（中央权威）支配的无政府状态","霍布斯在《利维坦》中从体系结构层次论证","霍布斯从人性层次论证国际冲突","被温特借用为「霍布斯文化」的概念原型"],a:[0,1,3],e:"C错：霍布斯从体系结构层次；马基雅维利才从人性层次。"},
+ {m:"现实主义",q:"现实主义思想渊源中，从「体系结构」层次论证冲突的有：",o:["霍布斯","卢梭","马基雅维利","修昔底德"],a:[0,1],e:"马基雅维利从人性层次；修昔底德是思想渊源（正义服从于权力），未归体系结构层次。"},
+ {m:"现实主义",q:"关于「利益的权力界定」，下列正确的有：",o:["是古典现实主义（摩根索）最核心的原则","国家利益由权力界定，权力是国家追求的核心目标","是普遍适用、不受时间空间影响的客观范畴","它以道德、制度来界定国家行为"],a:[0,1,2],e:"D错：以道德、制度界定行为是理想主义，正是现实主义所反对的。"},
+ {m:"现实主义",q:"关于权力与武力的区别，下列正确的有：",o:["权力本质上是一种心理关系","武力是物质强制工具、是获得权力的物质因素","武力是权力行使失效后的最终手段","武力是常态行使，权力是最终手段"],a:[0,1,2],e:"D颠倒：权力是常态行使的心理关系，武力是最终手段。"},
+ {m:"现实主义",q:"摩根索概括的三种国家权力（行为）模式包括：",o:["保持权力（现状政策）","增加权力（帝国主义政策）","显示权力（威望政策）","转移权力（结盟政策）"],a:[0,1,2],e:"D为虚构；三种模式是保持、增加、显示权力。"},
+ {m:"现实主义",q:"「帝国主义政策」的诱导因素包括：",o:["战争的胜利","战争的失败","权力真空","经济相互依赖"],a:[0,1,2],e:"诱导因素为战争胜利、战争失败、权力真空。"},
+ {m:"现实主义",q:"关于结构现实主义「结构」的三维界定，下列正确的有：",o:["排序原则（无政府状态）","单元功能（国家功能相似）","单元能力分配（真正区分体系结构）","单元的主观意图"],a:[0,1,2],e:"D错：结构不依赖单元的主观意图。"},
+ {m:"现实主义",q:"结构通过哪两种机制约束单元、使行为趋同：",o:["社会化","竞争性","制度化","议价"],a:[0,1],e:"结构的两种约束机制为社会化与竞争性。"},
+ {m:"现实主义",q:"关于相对收益，下列正确的有：",o:["是结构现实主义解释合作困难的核心概念","国家担忧对方利用多出收益在未来安全竞争中占优","相对收益属新自由制度主义","是阻碍无政府状态下国际合作的核心障碍"],a:[0,1,3],e:"C错：相对收益属新现实主义，绝对收益才属新自由制度主义。"},
+ {m:"现实主义",q:"关于安全困境，下列正确的有：",o:["根源在于无政府状态（对他国意图的不确定）","根源在于国家不理性或国家邪恶","表现为军备竞赛式的恶性循环","是结构现实主义解释冲突频发的关键机制"],a:[0,2,3],e:"B错：根源是无政府状态下的不确定性，而非国家邪恶或不理性。"},
+ {m:"现实主义",q:"关于新古典现实主义，下列正确的有：",o:["结合单元层次与体系层次，解释具体外交政策","将国内层次作为体系压力与国家行为之间的「中间变量」","常被视为研究路径而非独立理论","致力于解释宏观国际现象而非具体外交政策"],a:[0,1,2],e:"D错：新古典现实主义解释的是具体外交政策。"},
+ {m:"现实主义",q:"下列属于新古典现实主义的代表/主张有：",o:["沃尔福斯—决定行为的是对相对实力的主观认知","扎卡里亚—政府汲取国内资源的能力","施维勒—国家一致性决定制衡意愿与能力","华尔兹—结构=排序原则+单元功能+单元能力分配"],a:[0,1,2],e:"D是结构现实主义（华尔兹），不属新古典。"},
+ {m:"现实主义",q:"「国家一致性」四要素中，决定制衡「意愿」的是：",o:["精英共识","精英凝聚力","社会凝聚力","政权脆弱性"],a:[0,1],e:"精英共识、精英凝聚力决定意愿；社会凝聚力、政权脆弱性决定能力。"},
+ {m:"现实主义",q:"关于均势（权力均衡），下列正确的有：",o:["指多个力量彼此制约形成的动态平衡","实现方法是「减轻强者、增加弱者」","摩根索认为多极均势更灵活稳定","均势的反复出现依赖国家是理性行为体的假定"],a:[0,1,2],e:"D错：均势不依赖该假定，不理性国家被淘汰后仍回归均势。"},
+ {m:"现实主义",q:"「国家权力评估」的三种错误包括：",o:["绝对性错误","永久性错误","单一性错误","主观性错误"],a:[0,1,2],e:"三种错误为绝对性、永久性、单一性。"},
+ {m:"现实主义",q:"下列属于国家权力相对「稳定」要素的有：",o:["地理","自然资源","工业能力","国民士气"],a:[0,1,2],e:"D（国民士气）属变化要素；稳定要素含地理、自然资源、工业能力、战备、人口。"},
+ {m:"现实主义",q:"下列属于国家权力「变化」要素的有：",o:["民族性格","国民士气","外交素质","政府素质"],a:[0,1,2,3],e:"四者均为变化要素，其中外交素质决定权力要素的转化率。"},
+ {m:"现实主义",q:"关于稳定性之争，下列表述正确的有：",o:["摩根索认为多极更稳定","摩根索认为两极更稳定","华尔兹认为两极更稳定","华尔兹认为多极更稳定"],a:[0,2],e:"摩根索多极稳、华尔兹两极稳；B、D张冠李戴。"},
+ {m:"现实主义",q:"摩根索政治现实主义「六原则」包括下列哪些：",o:["政治受植根于人性的客观法则支配","利益由权力界定","不以抽象道德评判国家行为","应把一国道德上升为普世法则"],a:[0,1,2],e:"D错：六原则明确拒绝把一国道德上升为普世法则。"},
+ {m:"现实主义",q:"摩根索所述「权力的三种来源」包括：",o:["强迫（源于对损失的恐惧）","吸引","权威","武力"],a:[0,1,2],e:"三种来源为强迫、吸引、权威；武力是物质工具，非权力来源类别。"},
+ {m:"自由主义",q:"关于康德「永久和平」三路径与对应流派，下列正确的有：",o:["共和制政体 → 共和自由主义／民主和平论","以国际法为基础的国家联盟 → 新自由制度主义","国家间商业贸易 → 商业自由主义","国家联盟等于集体安全"],a:[0,1,2],e:"D错：康德的国家联盟不凌驾于主权国家之上，不等于集体安全。"},
+ {m:"自由主义",q:"关于相互依赖，下列正确的有：",o:["由基欧汉与约瑟夫·奈在《权力与相互依赖》中提出","联系即依赖，任何联系都构成相互依赖","非对称相互依赖可使一国获得对另一国的权力资源","按收益分配可分共同获益、共同受损、零和三类"],a:[0,2,3],e:"B错：联系不等于依赖，只有双方都需承担代价才构成相互依赖。"},
+ {m:"自由主义",q:"关于敏感性与脆弱性，下列正确的有：",o:["敏感性强调「感知速度」与「即时损失」","脆弱性强调「替代成本」","脆弱性是国际权力的重要来源","敏感性是国际权力的重要来源"],a:[0,1,2],e:"D错：敏感性可「选择性逃离」，非权力来源；脆弱性才是。"},
+ {m:"自由主义",q:"「复合相互依赖」的三个基本特征包括：",o:["社会存在多渠道联系","议程没有明确等级之分（无高低政治的截然区别）","国家在某些问题上不使用武力","安全议题始终高于经济议题"],a:[0,1,2],e:"D错：复合相互依赖恰恰认为不存在高低政治的截然区别。"},
+ {m:"自由主义",q:"关于民主和平论，下列正确的有：",o:["民主国家之间基本不打仗","民主国家与非民主国家之间仍频繁开战（双边性）","民主国家与任何国家都不打仗","因果机制是民主规范与制度约束"],a:[0,1,3],e:"C错：民主和平具双边性，对非民主国家仍频繁开战。"},
+ {m:"自由主义",q:"民主和平论的两条内生因果机制是：",o:["民主规范","制度约束","经济相互依赖","集体安全"],a:[0,1],e:"双机制为民主规范与制度约束。"},
+ {m:"自由主义",q:"商业自由主义论证「经济相互依赖促进和平」的渠道包括：",o:["战争机会成本说","经济威慑说","利益集团说","信息渠道说"],a:[0,1,2,3],e:"四条渠道齐备，共同支撑和平结论。"},
+ {m:"自由主义",q:"关于国际制度，下列正确的有：",o:["是新自由制度主义的核心范畴","表现形式有正式（非）政府间组织、国际机制、国际惯例","通过减少信息不确定性、降低交易成本推动合作","国际制度的建立必须依赖霸权"],a:[0,1,2],e:"D错：那是霸权稳定论；新自由制度主义主张霸权之后合作仍可能。"},
+ {m:"自由主义",q:"关于「和谐」与「合作」，下列正确的有：",o:["和谐指利己政策能自动促进他国目标实现、无需调整","合作是对纷争或潜在冲突的反应、经协调达成","和谐的关键在于不存在纷争","没有纷争时既有和谐也有合作"],a:[0,1,2],e:"D错：没有纷争只有和谐而无合作；合作是对纷争的反应。"},
+ {m:"自由主义",q:"关于新自由制度主义认定的合作障碍，下列正确的有：",o:["合作的最大障碍是「欺骗」（搭便车、违约、市场失灵）","合作的最大障碍是相对收益","欺骗源于信息不对称引发的担忧","通过制度提供对称信息、将单次博弈转为多次博弈可克服欺骗"],a:[0,2,3],e:"B错：相对收益是结构现实主义的障碍；新自由制度主义的障碍是欺骗。"},
+ {m:"自由主义",q:"「相互依赖的三种类型」与例证对应正确的有：",o:["共同获益—经济贸易","共同受损—军备竞赛","零和—领土争端","共同受损—领土争端"],a:[0,1,2],e:"D错：领土争端是零和型，不是共同受损型。"},
+ {m:"自由主义",q:"下列自由主义思想渊源对应正确的有：",o:["洛克—无政府不必然是战争状态、社会契约","亚当·斯密—利己推动利他、社会财富最大化","边沁—功利原则、主张国际法与公开外交","孟德斯鸠／安吉尔—商业导致和平"],a:[0,1,2,3],e:"四项对应均正确。"},
+ {m:"自由主义",q:"关于「霸权之后的合作」（新自由制度主义对霸权稳定论的反驳），下列正确的有：",o:["国际制度一旦建立便具功能价值与机制惯性","重建新制度的成本高昂","退出制度会面临声誉成本与跨领域报复","霸权衰落后国际合作必然走向瓦解"],a:[0,1,2],e:"D是霸权稳定论的悲观预测，正是新自由制度主义所反驳的。"},
+ {m:"自由主义",q:"新自由制度主义的核心研究范畴是：",o:["国际制度","国家间绝对收益","相互依存","权力分配格局"],a:[0],e:"B是关注点、C是前置理论、D是现实主义议题，均非「核心研究范畴」。"},
+ {m:"自由主义",q:"关于相互依赖与权力，下列正确的有：",o:["敏感性是权力的重要来源","脆弱性是权力的重要来源","敏感性可选择性逃离","脆弱性的关键是替代成本"],a:[1,2,3],e:"A错：敏感性可逃离，非权力来源。"},
+ {m:"自由主义",q:"康德「永久和平」的三条路径包括：",o:["共和制政体","集体安全体系","以国际法为基础的国家联盟","国家间商业贸易"],a:[0,2,3],e:"B错：国家联盟≠集体安全；三路径是共和制、国家联盟、商业贸易。"},
+ {m:"自由主义",q:"下列相互依赖类型与例证对应正确的有：",o:["经济贸易—共同获益","军备竞赛—共同受损","领土争端—零和","领土争端—共同受损"],a:[0,1,2],e:"D错：领土争端属零和型。"},
+ {m:"自由主义",q:"共和自由主义（民主和平论）的代表人物有：",o:["多伊尔","拉塞特","欧文","基欧汉"],a:[0,1,2],e:"基欧汉是新自由制度主义代表，不选D。"},
+ {m:"建构主义",q:"关于温和建构主义（温特）的三立场，下列正确的有：",o:["本体论坚持观念主义","认识论坚持实证主义","方法论坚持整体主义","本体论坚持物质主义"],a:[0,1,2],e:"D错：温特本体论是观念主义（弱势物质主义），不是物质主义。"},
+ {m:"建构主义",q:"关于建构主义的身份观，下列正确的有：",o:["身份并非先验给定、外生","身份通过自然选择与文化选择后天建构","文化选择是身份形成的主要路径","自然选择是身份形成的主要路径"],a:[0,1,2],e:"D错：文化选择（社会习得、模仿、符号互动）才是主要路径。"},
+ {m:"建构主义",q:"「身份的四种类型」包括：",o:["个体身份","类属身份","角色身份","集体身份"],a:[0,1,2,3],e:"四种身份类型齐备。"},
+ {m:"建构主义",q:"关于弱势物质主义，下列正确的有：",o:["承认物质力量是社会结构的重要组成部分","物质性因素本身不具备独立的社会意义","物质只有通过观念赋予社会意义后才影响行为","物质力量对行为体行为具有独立的决定作用"],a:[0,1,2],e:"D错：弱势物质主义否认物质具有独立的决定作用。"},
+ {m:"建构主义",q:"关于结构的作用方式，下列正确的有：",o:["理性主义认为结构只产生「因果作用」（影响行为）","建构主义认为结构有「建构作用」（重塑身份与利益）","建构主义认为结构只影响行为「怎么做」","理性主义认为结构重塑国家「自己是谁」"],a:[0,1],e:"C、D颠倒：建构主义重塑身份与利益，理性主义只影响行为。"},
+ {m:"建构主义",q:"关于三种无政府文化，下列正确的有：",o:["霍布斯文化：国家彼此视为敌人、相互毁灭","洛克文化：国家彼此视为对手、承认主权、维持现状","康德文化：国家彼此视为朋友、非暴力、共同防御","威斯特伐利亚以来的主导文化是康德文化"],a:[0,1,2],e:"D错：威斯特伐利亚以来主导的是洛克文化。"},
+ {m:"建构主义",q:"关于三种无政府文化的排序与演进，下列正确的有：",o:["顺序为 霍布斯→洛克→康德（暴力递减、信任递增）","当代主导文化是洛克文化","康德文化元素在当代渐增","三种文化差异根源在于国家间「角色身份」不同"],a:[0,1,2,3],e:"四项均正确。"},
+ {m:"建构主义",q:"关于「互构」，下列正确的有：",o:["指结构与行为体之间的双向建构关系","文化结构通过自然/文化选择建构国家身份与利益（由外而内）","国家可将私有知识沉淀为共同知识，反向改变体系结构（由内而外）","互构是单向的，只能由结构决定行为体"],a:[0,1,2],e:"D错：互构是双向的，行为体也能反向建构结构。"},
+ {m:"建构主义",q:"关于温特「霍布斯文化」与霍布斯原初思想的区别，下列正确的有：",o:["霍布斯、卢梭原初思想认为无政府是必然、永久的战争状态","温特认为霍布斯文化并非永久唯一，可发生文化跃迁","温特认为无政府逻辑是多元、可变、后天建构的","温特认为无政府逻辑是单一、永恒、由物质结构决定的"],a:[0,1,2],e:"D是原初思想（决定论）的观点，不是温特的建构论观点。"},
+ {m:"建构主义",q:"关于温特建构主义，下列正确的有：",o:["本体论是观念主义","本体论是物质主义","认识论是实证主义","是一种还原理论"],a:[0,2],e:"B错（本体是观念主义/弱势物质主义）、D错（是体系理论而非还原理论）。"},
+ {m:"辨析·归类·论战",q:"下列属于「体系理论」的有：",o:["古典现实主义","结构现实主义","新自由制度主义","温和建构主义"],a:[1,2,3],e:"古典现实主义是还原理论，不选A。"},
+ {m:"辨析·归类·论战",q:"下列属于「还原理论」的有：",o:["商业自由主义","共和自由主义","古典现实主义","新自由制度主义"],a:[0,1,2],e:"新自由制度主义是体系理论，不选D。"},
+ {m:"辨析·归类·论战",q:"下列属于「体系理论」（由外而内、从结构解释结果）的有：",o:["结构现实主义","新自由制度主义","温和建构主义","商业自由主义"],a:[0,1,2],e:"D（商业自由主义）是还原理论。"},
+ {m:"辨析·归类·论战",q:"下列属于「还原理论」（由内而外、从单元解释整体）的有：",o:["古典现实主义","商业自由主义","共和自由主义","结构现实主义"],a:[0,1,2],e:"D（结构现实主义）是体系理论。"},
+ {m:"辨析·归类·论战",q:"关于新古典现实主义的层次定位，下列正确的有：",o:["结构是自变量","国内因素是中间变量","外交政策是因变量","它是纯粹的体系理论"],a:[0,1,2],e:"D错：新古典现实主义是跨层次折中，非纯粹体系理论。"},
+ {m:"辨析·归类·论战",q:"关于四次论战的「焦点／双方」，下列正确的有：",o:["第一次：理想主义 vs 现实主义","第二次：方法论之争（传统主义 vs 行为主义）","第三次：结构 vs 制度（华尔兹 vs 基欧汉、奈）","第四次：给定 vs 建构（理性主义 vs 建构主义）"],a:[0,1,2,3],e:"四项对应均正确。"},
+ {m:"辨析·归类·论战",q:"关于第三次论战（新新论战）的结果，下列正确的有：",o:["不分胜负","本体论/认识论趋同","新自由制度主义被视为有益补充","理想主义彻底破灭"],a:[0,1,2],e:"D是第一次论战的结果，不是第三次。"},
+ {m:"辨析·归类·论战",q:"新自由制度主义与结构现实主义的「三大趋同」假定包括：",o:["国家是世界政治最核心的行为体","国家是理性利己的行为体","国际社会处于无政府状态","国家更关注相对收益"],a:[0,1,2],e:"D是二者的核心分野，而非趋同点。"},
+ {m:"辨析·归类·论战",q:"「国际制度的三种表现形式」包括：",o:["正式的（非）政府间组织","国际机制","国际惯例","霸权国家"],a:[0,1,2],e:"三种形式为正式（非）政府间组织、国际机制、国际惯例。"},
+ {m:"辨析·归类·论战",q:"下列关于收益关注的表述，正确的有：",o:["新现实主义关注相对收益","新自由制度主义关注绝对收益","新自由制度主义关注相对收益","二者收益关注一致"],a:[0,1],e:"C错（新自由制度关注绝对收益）、D错（收益关注正是核心分野）。"},
+ {m:"辨析·归类·论战",q:"下列认为「无政府状态必然/永久是战争状态」的有：",o:["霍布斯","洛克","卢梭","温特"],a:[0,2],e:"霍布斯、卢梭主张必然战争状态；洛克认为不必然；温特认为无政府逻辑可变。"},
+];
+
+/* ===== 国关·不定项答题引擎 ===== */
+const IR = (function(){
+  const $=s=>document.querySelector(s);
+  const MODS=["方法论与理论基础","现实主义","自由主义","建构主义","辨析·归类·论战"];
+  const SKEY="wpt_ir_wrong";
+  function lsGet(){try{return localStorage.getItem(SKEY)}catch(e){return null}}
+  function lsSet(v){try{localStorage.setItem(SKEY,v)}catch(e){}}
+  function wnGet(){try{const w=JSON.parse(window.name||"{}");return w.__ir||null}catch(e){return null}}
+  function wnSet(v){try{let w={};try{w=JSON.parse(window.name||"{}")}catch(e){}w.__ir=v;window.name=JSON.stringify(w)}catch(e){}}
+  function loadWrong(){let raw=lsGet();if(!raw)raw=wnGet();try{return JSON.parse(raw||"[]")}catch(e){return[]}}
+  function saveWrong(){const v=JSON.stringify(wrong.slice(-300));lsSet(v);wnSet(v);}
+  let wrong=loadWrong();
+  function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  function eq(a,b){if(a.length!==b.length)return false;const s=new Set(b);return a.every(x=>s.has(x));}
+  let state={mods:new Set(MODS),count:20,queue:[],idx:0,score:0,wrongN:0,roundWrong:[],answers:[]};
+
+  function mkChip(label,on,fn){const d=document.createElement("div");d.className="chip"+(on?" on":"");d.textContent=label;d.onclick=fn;return d;}
+
+  function renderSetup(){
+    const mc=$("#irModChips");mc.innerHTML="";
+    const allOn=state.mods.size===MODS.length;
+    mc.appendChild(mkChip("全部模块",allOn,()=>{if(allOn){state.mods.clear()}else{MODS.forEach(m=>state.mods.add(m))}renderSetup();}));
+    MODS.forEach(m=>{mc.appendChild(mkChip(m,state.mods.has(m),()=>{state.mods.has(m)?state.mods.delete(m):state.mods.add(m);renderSetup();}));});
+    const cc=$("#irCountChips");cc.innerHTML="";
+    [10,20,30,50].forEach(n=>{cc.appendChild(mkChip(n+" 题",state.count===n,()=>{state.count=n;renderSetup();}));});
+    $("#irWrongCount").textContent=wrong.length;
+    $("#irWrongBtn").disabled=wrong.length===0;
+  }
+
+  function build(){
+    let pool=IR_DATA.filter(x=>state.mods.has(x.m));
+    if(!pool.length)return[];
+    let chosen=shuffle(pool).slice(0,state.count);
+    while(chosen.length<state.count){chosen=chosen.concat(shuffle(pool).slice(0,state.count-chosen.length));}
+    return chosen.map(x=>({m:x.m,q:x.q,opts:shuffle(x.o.slice()),correct:x.a.map(i=>x.o[i]),e:x.e}));
+  }
+  function fromWrong(){return shuffle(wrong.map(w=>({m:w.m,q:w.q,opts:shuffle(w.opts.slice()),correct:w.correct,e:w.e})));}
+
+  function start(queue){
+    if(!queue||!queue.length){alert("当前所选模块无法生成题目，请多选模块。");return;}
+    state.queue=queue;state.idx=0;state.score=0;state.wrongN=0;state.roundWrong=[];state.answers=[];
+    $("#irSetup").classList.add("hidden");$("#irResult").classList.add("hidden");
+    $("#irQuiz").classList.remove("hidden");
+    renderQ();
+  }
+
+  function renderQ(){
+    const q=state.queue[state.idx];
+    $("#irQcount").textContent="第 "+(state.idx+1)+" / "+state.queue.length+" 题";
+    $("#irLiveScore").textContent=state.score;
+    $("#irLiveWrong").textContent=state.wrongN;
+    $("#irProgBar").style.width=(state.idx/state.queue.length*100)+"%";
+    $("#irQtype").textContent=q.m;
+    $("#irQtext").innerHTML=q.q;
+    const oc=$("#irOpts");oc.innerHTML="";
+    q.opts.forEach((o,i)=>{
+      const d=document.createElement("div");
+      d.className="opt";d.dataset.val=o;
+      d.innerHTML='<span class="box"></span><span class="k">'+"ABCD"[i]+'</span><span>'+o+'</span>';
+      d.onclick=()=>{if(!d.classList.contains("locked"))d.classList.toggle("sel");};
+      oc.appendChild(d);
+    });
+    $("#irExplain").className="explain";$("#irExplain").innerHTML="";
+    $("#irSubmitBtn").classList.remove("hidden");
+    $("#irNextBtn").classList.add("hidden");
+    $("#irNextBtn").textContent=state.idx===state.queue.length-1?"查看结果":"下一题";
+    $("#irPrevBtn").disabled=state.idx===0;
+    const ab=$("#irAddWrongBtn");ab.classList.add("hidden");ab.classList.remove("added");ab.textContent="＋ 加入错题本";
+    const prev=state.answers[state.idx];
+    if(prev){
+      prev.sel.forEach(v=>{const el=[...oc.children].find(c=>c.dataset.val===v);if(el)el.classList.add("sel");});
+      gradeLock(q,prev.sel,prev.correct);
+      ab.classList.remove("hidden");
+      if(!prev.correct){ab.classList.add("added");ab.textContent="✓ 已加入错题本";}
+    }
+  }
+
+  function gradeLock(q,sel,correct){
+    const selSet=new Set(sel),corSet=new Set(q.correct);
+    [...$("#irOpts").children].forEach(el=>{
+      el.classList.add("locked");
+      const v=el.dataset.val,isC=corSet.has(v),isS=selSet.has(v),box=el.querySelector(".box");
+      el.classList.remove("sel");
+      if(isC&&isS){el.classList.add("correct");box.textContent="✓";}
+      else if(isC&&!isS){el.classList.add("miss");box.textContent="✓";}
+      else if(!isC&&isS){el.classList.add("wrong");box.textContent="✗";}
+    });
+    const letters=q.opts.map((o,i)=>corSet.has(o)?"ABCD"[i]:null).filter(Boolean).join("");
+    const ex=$("#irExplain");ex.className="explain show";
+    ex.innerHTML="<b>"+(correct?"✓ 回答正确":"✗ 正确答案："+letters)+"</b>　【"+q.m+"】<br>"+q.e;
+    $("#irSubmitBtn").classList.add("hidden");
+    $("#irNextBtn").classList.remove("hidden");
+  }
+
+  function addWrong(q){if(!wrong.some(w=>w.q===q.q)){wrong.push({m:q.m,q:q.q,opts:q.opts,correct:q.correct,e:q.e});saveWrong();}}
+
+  function submit(){
+    const q=state.queue[state.idx];
+    if(state.answers[state.idx])return;
+    const sel=[...$("#irOpts").children].filter(c=>c.classList.contains("sel")).map(c=>c.dataset.val);
+    if(!sel.length){toast("请至少选择一个选项");return;}
+    const correct=eq(sel,q.correct);
+    gradeLock(q,sel,correct);
+    if(correct){state.score++;}else{state.wrongN++;state.roundWrong.push(q);addWrong(q);}
+    $("#irLiveScore").textContent=state.score;
+    $("#irLiveWrong").textContent=state.wrongN;
+    state.answers[state.idx]={sel,correct};
+    $("#irProgBar").style.width=((state.idx+1)/state.queue.length*100)+"%";
+    const ab=$("#irAddWrongBtn");ab.classList.remove("hidden");
+    if(!correct){ab.classList.add("added");ab.textContent="✓ 已加入错题本";}
+  }
+
+  function next(){if(!state.answers[state.idx])return;if(state.idx<state.queue.length-1){state.idx++;renderQ();}else finish();}
+  function prev(){if(state.idx===0)return;state.idx--;renderQ();}
+
+  function finish(){
+    $("#irQuiz").classList.add("hidden");$("#irResult").classList.remove("hidden");
+    $("#irFinalScore").textContent=state.score;
+    $("#irFinalTotal").textContent=state.queue.length;
+    const pct=Math.round(state.score/state.queue.length*100);
+    $("#irFinalPct").textContent="正确率 "+pct+"%　|　答错 "+state.wrongN+" 题";
+    let tip="";
+    if(pct>=90)tip="掌握扎实，临场细看辨析对子（相对/绝对收益、敏感/脆弱、三种文化）即可。";
+    else if(pct>=70)tip="基础不错，重点回看本轮错题与「归类排查」型多选。";
+    else tip="建议先按单模块分块刷，配合错题本反复巩固；多选/错选归零是重灾区。";
+    if(wrong.length)tip+=" 错题本已累计 "+wrong.length+" 题。";
+    $("#irResultTip").textContent=tip;
+    $("#irRedoWrongBtn").style.display=state.roundWrong.length?"":"none";
+  }
+
+  function init(){
+    renderSetup();
+    $("#irStartBtn").onclick=()=>start(build());
+    $("#irWrongBtn").onclick=()=>{if(!wrong.length)return;start(fromWrong());};
+    $("#irSubmitBtn").onclick=submit;
+    $("#irNextBtn").onclick=next;
+    $("#irPrevBtn").onclick=prev;
+    $("#irQuitBtn").onclick=()=>{state.queue=state.queue.slice(0,state.idx+1);finish();};
+    $("#irAgainBtn").onclick=()=>start(build());
+    $("#irRedoWrongBtn").onclick=()=>start(shuffle(state.roundWrong.map(w=>({m:w.m,q:w.q,opts:shuffle(w.opts.slice()),correct:w.correct,e:w.e}))));
+    $("#irBackBtn").onclick=()=>{$("#irResult").classList.add("hidden");$("#irSetup").classList.remove("hidden");renderSetup();};
+    $("#irAddWrongBtn").onclick=function(){if(this.classList.contains("added"))return;addWrong(state.queue[state.idx]);this.classList.add("added");this.textContent="✓ 已加入错题本";toast("已加入错题本");renderSetup();};
+    $("#irExportBtn").onclick=function(){if(!wrong.length){toast("错题本是空的");return;}const box=$("#irIoBox");box.value=JSON.stringify(wrong);box.classList.remove("hidden");$("#irConfirmImportBtn").classList.add("hidden");box.select();try{document.execCommand("copy");toast("已复制到剪贴板");}catch(e){toast("请手动复制下方文本框内容");}};
+    $("#irImportBtn").onclick=function(){const box=$("#irIoBox");box.value="";box.classList.remove("hidden");$("#irConfirmImportBtn").classList.remove("hidden");box.focus();};
+    $("#irConfirmImportBtn").onclick=function(){try{const list=JSON.parse($("#irIoBox").value.trim());if(!Array.isArray(list))throw new Error();let added=0;list.forEach(w=>{if(w&&w.q&&!wrong.some(x=>x.q===w.q)){wrong.push(w);added++;}});saveWrong();renderSetup();toast("导入成功，新增 "+added+" 题");$("#irIoBox").classList.add("hidden");this.classList.add("hidden");}catch(e){toast("格式不对，请粘贴完整导出内容");}};
+    $("#irClearWrongBtn").onclick=function(){if(!wrong.length){toast("错题本已经是空的");return;}if(!confirm("确定清空全部 "+wrong.length+" 道错题吗？"))return;wrong=[];saveWrong();renderSetup();toast("错题本已清空");$("#irIoBox").classList.add("hidden");$("#irConfirmImportBtn").classList.add("hidden");};
+    document.addEventListener("keydown",e=>{
+      if($("#irApp").classList.contains("hidden"))return;
+      if($("#irQuiz").classList.contains("hidden"))return;
+      if(["1","2","3","4"].includes(e.key)){const els=$("#irOpts").children;const i=+e.key-1;if(els[i]&&!els[i].classList.contains("locked"))els[i].click();}
+      else if(e.key==="Enter"){if(state.answers[state.idx])next();else submit();}
+      else if(e.key==="ArrowRight"){if(state.answers[state.idx])next();}
+      else if(e.key==="ArrowLeft"){prev();}
+    });
+  }
+  return {renderSetup,init};
+})();
+
 // ===== 验证弹窗：答对(11)进入，答错则封锁页面 =====
 (function(){
   const gate=$("#gateModal"), input=$("#gateInput");
@@ -906,12 +1255,24 @@ $("#clearWrongBtn").onclick=function(){
 // ===== 开场弹窗（两个选项都可关闭，无关闭叉）=====
 (function(){
   const m=$("#introModal");
-  const close=()=>m.classList.add("hidden");
+  const close=()=>{m.classList.add("hidden");document.querySelector("#courseSelect").classList.remove("hidden");};
   $("#modalNo").onclick=close;
   $("#modalYes").onclick=close;
 })();
 
+
+// ===== 课程选择导航 =====
+(function(){
+  const cs=document.querySelector("#courseSelect"),poli=document.querySelector("#poliApp"),ir=document.querySelector("#irApp");
+  function show(el){cs.classList.add("hidden");el.classList.remove("hidden");}
+  function back(){poli.classList.add("hidden");ir.classList.add("hidden");cs.classList.remove("hidden");}
+  document.querySelector("#cardPoli").onclick=()=>{show(poli);renderSetup();};
+  document.querySelector("#cardIR").onclick=()=>{show(ir);};
+  document.querySelector("#poliSwitch").onclick=back;
+  document.querySelector("#irSwitch").onclick=back;
+})();
 renderSetup();
+IR.init();
 </script>
 </body>
 </html>
